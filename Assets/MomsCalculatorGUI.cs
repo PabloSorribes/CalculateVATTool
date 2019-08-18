@@ -30,7 +30,6 @@ public class MomsCalculatorGUI : MonoBehaviour
 	{
 		//Set initial values to the most common percentages (25% vs 20%) and update float-versions of these values.
 		nettoPercent.value = 2;
-		bruttoPercent.value = 2;
 		UpdateCurrentPercentages();
 	}
 
