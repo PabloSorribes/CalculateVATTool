@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MomsCalculatorGUI : MonoBehaviour
+public class VATCalculatorGUI : MonoBehaviour
 {
 	//--- PROCENTSATSER(NETTO VS BRUTTO) ---
 	//NETTO		BRUTTO
