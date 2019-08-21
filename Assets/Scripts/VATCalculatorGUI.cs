@@ -20,6 +20,10 @@ public class VATCalculatorGUI : MonoBehaviour
 	[SerializeField] private InputField nettoMoney;
 	[SerializeField] private InputField bruttoMoney;
 
+	[Space]
+
+	[SerializeField] private Toggle roundToWholeNumbersToggle;
+
 	private float currentNettoPercent;
 	public float CurrentNettoPercent { get { return currentNettoPercent / 100; } }
 
@@ -57,29 +61,63 @@ public class VATCalculatorGUI : MonoBehaviour
 
 	public void OnNettoMoneyChanged()
 	{
-		float currentNetto = float.Parse(nettoMoney.text, CultureInfo.InvariantCulture.NumberFormat);
-		float currentBrutto = CalculateBruttoFromNetto(currentNetto, CurrentNettoPercent);
+		string text = nettoMoney.text;
+
+		//Error check
+		if (string.IsNullOrEmpty(text))
+		{
+			return;
+		}
+
+		//Detect if there is a comma instead of dot in the input string (to avoid errors)
+		if (text.Contains(","))
+		{
+			text = text.Replace(",", ".");
+		}
+
+		float currentNetto = float.Parse(text, CultureInfo.InvariantCulture);
+		float currentBrutto = CalculateBruttoFromNetto(currentNetto, CurrentNettoPercent, roundToWholeNumbersToggle.isOn);
 		bruttoMoney.text = currentBrutto.ToString();
 	}
 
 	public void OnBruttoMoneyChanged()
 	{
-		float currentBrutto = float.Parse(bruttoMoney.text, CultureInfo.InvariantCulture.NumberFormat);
-		float currentNetto = CalculateNettoFromBrutto(currentBrutto, CurrentBruttoProcent);
+		string text = bruttoMoney.text;
+
+		//Error check
+		if (string.IsNullOrEmpty(text))
+		{
+			return;
+		}
+
+		//Detect if there is a comma instead of dot in the input string (to avoid errors)
+		if (text.Contains(","))
+		{
+			text = text.Replace(",", ".");
+		}
+
+		float currentBrutto = float.Parse(text, CultureInfo.InvariantCulture);
+		float currentNetto = CalculateNettoFromBrutto(currentBrutto, CurrentBruttoProcent, roundToWholeNumbersToggle.isOn);
 		nettoMoney.text = currentNetto.ToString();
 	}
 
-	private float CalculateBruttoFromNetto(float nettoMoney, float nettoPercentage)
+	private float CalculateBruttoFromNetto(float nettoMoney, float nettoPercentage, bool roundToWholeNumbers = true)
 	{
 		float bruttoMoney = nettoMoney + (nettoMoney * nettoPercentage);
-		bruttoMoney = Mathf.Round(bruttoMoney);
+		if (roundToWholeNumbers)
+		{
+			bruttoMoney = Mathf.Round(bruttoMoney);
+		}
 		return bruttoMoney;
 	}
 
-	private float CalculateNettoFromBrutto(float bruttoMoney, float bruttoPercentage)
+	private float CalculateNettoFromBrutto(float bruttoMoney, float bruttoPercentage, bool roundToWholeNumbers = true)
 	{
 		float nettoMoney = bruttoMoney + (bruttoMoney * -bruttoPercentage);
-		nettoMoney = Mathf.Round(nettoMoney);
+		if (roundToWholeNumbers)
+		{
+			nettoMoney = Mathf.Round(nettoMoney);
+		}
 		return nettoMoney;
 	}
 }
